@@ -1,0 +1,659 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Profile {
+  id                    String    @id @default(uuid()) @db.Uuid
+  email                 String    @unique
+  name                  String
+  phone                 String?
+  cpf                   String?
+  cnpj                  String?
+  user_type             String
+  avatar_url            String?
+  bio                   String?
+  status                String
+  verification_status   String
+  email_verified        Boolean   @default(false)
+  is_admin              Boolean   @default(false)
+  is_online             Boolean   @default(false)
+  last_seen             DateTime? @db.Timestamptz
+  last_login_at         DateTime? @db.Timestamptz
+  rating                Decimal   @default(0.0)
+  total_ratings         Int       @default(0)
+  total_freights        Int       @default(0)
+  completed_freights    Int       @default(0)
+  cancelled_freights    Int       @default(0)
+  total_distance_km     Decimal   @default(0.0)
+  total_earnings        Decimal   @default(0.0)
+  followers_count       Int       @default(0)
+  following_count       Int       @default(0)
+  push_token            String?
+  push_token_updated_at DateTime? @db.Timestamptz
+  city                  String?
+  state                 String?
+  metadata              Json?
+  created_at            DateTime  @default(now()) @db.Timestamptz
+  updated_at            DateTime  @updatedAt @db.Timestamptz
+
+  @@map("profiles")
+}
+
+model Company {
+  id                     String    @id @default(uuid()) @db.Uuid
+  user_id                String    @unique @db.Uuid
+  company_name           String
+  trading_name           String?
+  company_type           String
+  company_subtype        String
+  cnpj                   String?
+  is_individual          Boolean   @default(false)
+  main_cpf               String?
+  state_registration     String?
+  municipal_registration String?
+  email                  String?
+  phone                  String?
+  website                String?
+  logo_url               String?
+  description            String?
+  address                Json?
+  certifications         Json?
+  fleet_size             Int?
+  operating_states       String[]
+  representative_name    String?
+  representative_cpf     String?
+  representative_rg      String?
+  representative_phone   String?
+  representative_email   String?
+  representative_role    String?
+  representative_cnh     String?
+  rntrc                  String?
+  rntrc_expiry           DateTime? @db.Date
+  rntrc_status           String
+  ocb_registration       String?
+  status                 String
+  verification_status    String
+  rating                 Decimal   @default(0.0)
+  active_freights        Int       @default(0)
+  completed_freights     Int       @default(0)
+  review_count           Int       @default(0)
+  created_at             DateTime  @default(now()) @db.Timestamptz
+  updated_at             DateTime  @updatedAt @db.Timestamptz
+
+  @@map("companies")
+}
+
+model Driver {
+  id                          String    @id @default(uuid()) @db.Uuid
+  user_id                     String    @unique @db.Uuid
+  name                        String
+  phone                       String?
+  cpf                         String?
+  rg                          String?
+  birth_date                  DateTime? @db.Date
+  cnh                         String?
+  cnh_category                String
+  cnh_expiry                  DateTime? @db.Date
+  rntrc                       String?
+  rntrc_expiry                DateTime? @db.Date
+  rntrc_status                String
+  driver_classification       String
+  payment_account_holder      String
+  payment_account_holder_name String?
+  payment_account_holder_doc  String?
+  profile_image               String?
+  vehicle_type                String?
+  vehicle_plate               String?
+  vehicle_model               String?
+  vehicle_year                String?
+  vehicle_capacity            Decimal?
+  renavam                     String?
+  antt_vehicle                String?
+  vehicle_types               String[]
+  body_types                  String[]
+  trailer_type                String?
+  experience_years            Int?
+  specializations             String[]
+  current_location            Json?
+  address                     Json?
+  available                   Boolean   @default(true)
+  availability_expires_at     DateTime? @db.Timestamptz
+  rating                      Decimal   @default(0.0)
+  punctuality                 Decimal   @default(0.0)
+  completed_trips             Int       @default(0)
+  created_at                  DateTime  @default(now()) @db.Timestamptz
+  updated_at                  DateTime  @updatedAt @db.Timestamptz
+
+  @@map("drivers")
+}
+
+model Freight {
+  id                       String    @id @default(uuid()) @db.Uuid
+  freight_code             String?   @unique
+  title                    String?
+  description              String?
+  publisher_id             String    @db.Uuid
+  publisher_phone          String?
+  created_by               String?   @db.Uuid
+  status                   String
+  visibility               String
+  origin_city              String?
+  origin_state             String?
+  origin_address           String?
+  origin_cep               String?
+  origin_coordinates       Json?
+  destination_city         String?
+  destination_state        String?
+  destination_address      String?
+  destination_cep          String?
+  destination_coordinates  Json?
+  cargo_type               String?
+  weight_kg                Decimal?
+  volume_m3                Decimal?
+  quantity                 String?
+  vehicle_types            String[]
+  body_types               String[]
+  requirements             Json?
+  value_estimate           Decimal?
+  distance_km              Decimal?
+  duration_hours           Decimal?
+  is_urgent                Boolean   @default(false)
+  is_fractioned            Boolean   @default(false)
+  is_full_load             Boolean   @default(false)
+  pickup_date              DateTime? @db.Timestamptz
+  delivery_date            DateTime? @db.Timestamptz
+  deadline_date            DateTime? @db.Timestamptz
+  scheduled_date           DateTime? @db.Timestamptz
+  expires_at               DateTime? @db.Timestamptz
+  accepted_driver_id       String?   @db.Uuid
+  accepted_driver_name     String?
+  views_count              Int       @default(0)
+  operation_type           String?
+  load_classification      String?
+  piso_minimo_valor        Decimal?
+  piso_minimo_calculado_em DateTime? @db.Timestamptz
+  abaixo_do_piso           Boolean   @default(false)
+  ciot_status              String
+  vale_pedagio_status      String
+  payment_account_type     String?
+  advance_payment_percent  Decimal?
+  metadata                 Json?
+  created_at               DateTime  @default(now()) @db.Timestamptz
+  updated_at               DateTime  @updatedAt @db.Timestamptz
+  published_at             DateTime? @db.Timestamptz
+  completed_at             DateTime? @db.Timestamptz
+  cancelled_at             DateTime? @db.Timestamptz
+  cancellation_reason      String?
+
+  @@map("freights")
+}
+
+model Conversation {
+  id                      String    @id @default(uuid()) @db.Uuid
+  participant1_id         String    @db.Uuid
+  participant2_id         String    @db.Uuid
+  source                  String
+  source_id               String?
+  freight_id              String?   @db.Uuid
+  origin_city             String?
+  origin_state            String?
+  destination_city        String?
+  destination_state       String?
+  last_message_at         DateTime? @db.Timestamptz
+  last_message_content    String?
+  last_message_sender_id  String?   @db.Uuid
+  last_message_read       Boolean   @default(false)
+  deleted_by_participant1 Boolean   @default(false)
+  deleted_by_participant2 Boolean   @default(false)
+  is_pinned               Boolean   @default(false)
+  is_muted                Boolean   @default(false)
+  metadata                Json?
+  created_at              DateTime  @default(now()) @db.Timestamptz
+
+  @@map("conversations")
+}
+
+model Message {
+  id              String    @id @default(uuid()) @db.Uuid
+  conversation_id String    @db.Uuid
+  sender_id       String    @db.Uuid
+  content         String
+  message_type    String
+  attachments     Json?
+  is_read         Boolean   @default(false)
+  read_at         DateTime? @db.Timestamptz
+  reported        Boolean   @default(false)
+  metadata        Json?
+  created_at      DateTime  @default(now()) @db.Timestamptz
+
+  @@map("messages")
+}
+
+model Notification {
+  id           String    @id @default(uuid()) @db.Uuid
+  user_id      String    @db.Uuid
+  type         String
+  title        String
+  message      String
+  icon         String?
+  related_id   String?   @db.Uuid
+  related_type String?
+  action_url   String?
+  action_label String?
+  is_read      Boolean   @default(false)
+  read_at      DateTime? @db.Timestamptz
+  metadata     Json?
+  created_at   DateTime  @default(now()) @db.Timestamptz
+
+  @@map("notifications")
+}
+
+model Rating {
+  id                     String    @id @default(uuid()) @db.Uuid
+  freight_id             String?   @db.Uuid
+  freight_code           String?
+  target_id              String    @db.Uuid
+  target_name            String?
+  target_type            String?
+  evaluator_id           String    @db.Uuid
+  evaluator_name         String?
+  evaluator_type         String?
+  overall_rating         Decimal
+  punctuality_rating     Decimal?
+  communication_rating   Decimal?
+  professionalism_rating Decimal?
+  categories             Json?
+  comment                String?
+  reported               Boolean   @default(false)
+  report_reason          String?
+  status                 String
+  created_at             DateTime  @default(now()) @db.Timestamptz
+  updated_at             DateTime  @updatedAt @db.Timestamptz
+
+  @@map("ratings")
+}
+
+model UserFollow {
+  id           String   @id @default(uuid()) @db.Uuid
+  follower_id  String   @db.Uuid
+  following_id String   @db.Uuid
+  created_at   DateTime @default(now()) @db.Timestamptz
+
+  @@map("user_follows")
+}
+
+model SocialPost {
+  id             String   @id @default(uuid()) @db.Uuid
+  author_id      String   @db.Uuid
+  content        String
+  type           String
+  visibility     String
+  images         String[]
+  attachments    Json?
+  likes_count    Int      @default(0)
+  comments_count Int      @default(0)
+  shares_count   Int      @default(0)
+  tags           String[]
+  location       String?
+  metadata       Json?
+  created_at     DateTime @default(now()) @db.Timestamptz
+  updated_at     DateTime @updatedAt @db.Timestamptz
+
+  @@map("social_posts")
+}
+
+model SocialLike {
+  id         String   @id @default(uuid()) @db.Uuid
+  post_id    String   @db.Uuid
+  user_id    String   @db.Uuid
+  created_at DateTime @default(now()) @db.Timestamptz
+
+  @@map("social_likes")
+}
+
+model SocialComment {
+  id          String   @id @default(uuid()) @db.Uuid
+  post_id     String   @db.Uuid
+  author_id   String   @db.Uuid
+  content     String
+  likes_count Int      @default(0)
+  created_at  DateTime @default(now()) @db.Timestamptz
+  updated_at  DateTime @updatedAt @db.Timestamptz
+
+  @@map("social_comments")
+}
+
+model Favorite {
+  id         String   @id @default(uuid()) @db.Uuid
+  user_id    String   @db.Uuid
+  driver_id  String?  @db.Uuid
+  company_id String?  @db.Uuid
+  created_at DateTime @default(now()) @db.Timestamptz
+
+  @@map("favorites")
+}
+
+model CustomRole {
+  id          String   @id @default(uuid()) @db.Uuid
+  company_id  String   @db.Uuid
+  role_id     String
+  name        String
+  description String?
+  permissions Json?
+  created_by  String?  @db.Uuid
+  created_at  DateTime @default(now()) @db.Timestamptz
+  updated_at  DateTime @updatedAt @db.Timestamptz
+
+  @@map("custom_roles")
+}
+
+model Collaborator {
+  id             String   @id @default(uuid()) @db.Uuid
+  company_id     String   @db.Uuid
+  user_id        String?  @db.Uuid
+  name           String
+  email          String?
+  phone          String?
+  role_id        String?
+  is_super_admin Boolean  @default(false)
+  is_active      Boolean  @default(true)
+  last_access    DateTime? @db.Timestamptz
+  created_by     String?  @db.Uuid
+  created_at     DateTime @default(now()) @db.Timestamptz
+  updated_at     DateTime @updatedAt @db.Timestamptz
+
+  @@map("collaborators")
+}
+
+model CompanySavedContact {
+  id         String   @id @default(uuid()) @db.Uuid
+  company_id String   @db.Uuid
+  name       String
+  email      String?
+  phone      String?
+  is_active  Boolean  @default(true)
+  created_by String?  @db.Uuid
+  created_at DateTime @default(now()) @db.Timestamptz
+
+  @@map("company_saved_contacts")
+}
+
+model FreightResponsibleContact {
+  id              String   @id @default(uuid()) @db.Uuid
+  freight_id      String   @db.Uuid
+  contact_name    String
+  contact_email   String?
+  contact_phone   String?
+  is_main_contact Boolean  @default(false)
+  source          String
+  source_id       String?  @db.Uuid
+  created_at      DateTime @default(now()) @db.Timestamptz
+
+  @@map("freight_responsible_contacts")
+}
+
+model ProfileView {
+  id         String   @id @default(uuid()) @db.Uuid
+  viewer_id  String   @db.Uuid
+  target_id  String   @db.Uuid
+  created_at DateTime @default(now()) @db.Timestamptz
+
+  @@map("profile_views")
+}
+
+model PisoMinimoCoefficient {
+  id                 String   @id @default(uuid()) @db.Uuid
+  categoria_carga    String
+  tabela             String
+  eixos              Int
+  ccd                Decimal
+  cc                 Decimal
+  fonte              String?
+  needs_verification Boolean  @default(false)
+  vigente_desde      DateTime @db.Date
+  updated_at         DateTime @updatedAt @db.Timestamptz
+  updated_by         String?  @db.Uuid
+
+  @@map("piso_minimo_coefficients")
+}
+
+model InsurancePolicy {
+  id            String   @id @default(uuid()) @db.Uuid
+  owner_type    String
+  owner_id      String   @db.Uuid
+  policy_type   String
+  insurer_name  String?
+  policy_number String?
+  valid_from    DateTime? @db.Date
+  valid_until   DateTime  @db.Date
+  status        String
+  document_url  String?
+  verified_by   String?  @db.Uuid
+  verified_at   DateTime? @db.Timestamptz
+  notes         String?
+  created_at    DateTime @default(now()) @db.Timestamptz
+  updated_at    DateTime @updatedAt @db.Timestamptz
+
+  @@map("insurance_policies")
+}
+
+model RntrcVerification {
+  id           String   @id @default(uuid()) @db.Uuid
+  owner_type   String
+  owner_id     String   @db.Uuid
+  rntrc_number String?
+  status       String
+  method       String
+  checked_by   String?  @db.Uuid
+  checked_at   DateTime @db.Timestamptz
+  notes        String?
+  created_at   DateTime @default(now()) @db.Timestamptz
+
+  @@map("rntrc_verifications")
+}
+
+model CiotOperation {
+  id                    String   @id @default(uuid()) @db.Uuid
+  freight_id            String   @db.Uuid
+  ciot_number           String?
+  status                String
+  provider              String
+  operation_type        String?
+  contratante_id        String?  @db.Uuid
+  contratado_id         String?  @db.Uuid
+  subcontratado_id      String?  @db.Uuid
+  valor_operacao        Decimal?
+  piso_minimo_aplicavel Decimal?
+  generated_at          DateTime? @db.Timestamptz
+  generated_by          String?  @db.Uuid
+  blocked_reason        String?
+  raw_response          Json?
+  created_at            DateTime @default(now()) @db.Timestamptz
+  updated_at            DateTime @updatedAt @db.Timestamptz
+
+  @@map("ciot_operations")
+}
+
+model MdfeRecord {
+  id                String   @id @default(uuid()) @db.Uuid
+  freight_id        String   @db.Uuid
+  numero_mdfe       String?
+  chave_acesso      String?
+  status            String
+  ciot_operation_id String?  @db.Uuid
+  issued_at         DateTime? @db.Timestamptz
+  issued_by         String?  @db.Uuid
+  created_at        DateTime @default(now()) @db.Timestamptz
+  updated_at        DateTime @updatedAt @db.Timestamptz
+
+  @@map("mdfe_records")
+}
+
+model ValePedagioRecord {
+  id            String   @id @default(uuid()) @db.Uuid
+  freight_id    String   @db.Uuid
+  provider      String
+  tag_number    String?
+  valor         Decimal?
+  status        String
+  registered_at DateTime? @db.Timestamptz
+  created_at    DateTime @default(now()) @db.Timestamptz
+  updated_at    DateTime @updatedAt @db.Timestamptz
+
+  @@map("vale_pedagio_records")
+}
+
+model AdminConfig {
+  id         Int      @id @default(autoincrement())
+  config     Json
+  updated_at DateTime @updatedAt @db.Timestamptz
+  updated_by String?  @db.Uuid
+
+  @@map("admin_config")
+}
+
+model ActivityLog {
+  id          String   @id @default(uuid()) @db.Uuid
+  user_id     String?  @db.Uuid
+  company_id  String?  @db.Uuid
+  action      String
+  category    String?
+  entity_type String?
+  entity_id   String?
+  target_type String?
+  target_id   String?
+  description String?
+  metadata    Json?
+  ip_address  String?
+  user_agent  String?
+  created_at  DateTime @default(now()) @db.Timestamptz
+
+  @@map("activity_logs")
+}
+
+model Transaction {
+  id               String   @id @default(uuid()) @db.Uuid
+  freight_id       String?  @db.Uuid
+  payer_id         String?  @db.Uuid
+  receiver_id      String?  @db.Uuid
+  amount           Decimal
+  fee              Decimal
+  net_amount       Decimal?
+  currency         String
+  payment_method   String?
+  payment_status   String
+  transaction_type String?
+  external_id      String?
+  receipt_path     String?
+  gateway_response Json?
+  metadata         Json?
+  created_at       DateTime @default(now()) @db.Timestamptz
+  updated_at       DateTime @updatedAt @db.Timestamptz
+  processed_at     DateTime? @db.Timestamptz
+  completed_at     DateTime? @db.Timestamptz
+
+  @@map("transactions")
+}
+
+model UserPreference {
+  id                    String   @id @default(uuid()) @db.Uuid
+  user_id               String   @unique @db.Uuid
+  notifications_enabled Boolean  @default(true)
+  email_alerts          Boolean  @default(true)
+  sms_alerts            Boolean  @default(false)
+  push_notifications    Boolean  @default(true)
+  freight_alerts        Boolean  @default(true)
+  chat_notifications    Boolean  @default(true)
+  marketing_emails      Boolean  @default(false)
+  language              String   @default("pt-BR")
+  theme                 String   @default("light")
+  distance_unit         String   @default("km")
+  currency              String   @default("BRL")
+  notification_settings Json?
+  privacy_settings      Json?
+  created_at            DateTime @default(now()) @db.Timestamptz
+  updated_at            DateTime @updatedAt @db.Timestamptz
+  ui_settings           Json?
+
+  @@map("user_preferences")
+}
+
+model TrackingEvent {
+  id          String   @id @default(uuid()) @db.Uuid
+  freight_id  String   @db.Uuid
+  driver_id   String?  @db.Uuid
+  event_type  String
+  status      String?
+  description String?
+  location    Json?
+  images      String[]
+  notes       String?
+  created_at  DateTime @default(now()) @db.Timestamptz
+
+  @@map("tracking_events")
+}
+
+model SupportThread {
+  id           String   @id @default(uuid()) @db.Uuid
+  participants String[] @db.Uuid
+  type         String
+  freight_id   String?  @db.Uuid
+  last_message Json?
+  unread_count Json?
+  is_archived  Boolean  @default(false)
+  status       String
+  created_at   DateTime @default(now()) @db.Timestamptz
+  updated_at   DateTime @updatedAt @db.Timestamptz
+
+  @@map("support_threads")
+}
+
+model PreferredRoute {
+  id                    String   @id @default(uuid()) @db.Uuid
+  driver_id             String   @db.Uuid
+  origin                Json
+  destination           Json
+  priority              String
+  notes                 String?
+  description           String?
+  is_active             Boolean  @default(true)
+  available_from        DateTime? @db.Date
+  available_until       DateTime? @db.Date
+  vehicle_types         String[]
+  capacity_kg           Decimal?
+  preferred_cargo_types String[]
+  price_per_km          Decimal?
+  minimum_value         Decimal?
+  accepts_partial_load  Boolean  @default(false)
+  views_count           Int      @default(0)
+  contacts_count        Int      @default(0)
+  metadata              Json?
+  created_at            DateTime @default(now()) @db.Timestamptz
+  updated_at            DateTime @updatedAt @db.Timestamptz
+
+  @@map("preferred_routes")
+}
+
+model Document {
+  id               String   @id @default(uuid()) @db.Uuid
+  owner_type       String
+  user_id          String   @db.Uuid
+  document_type    String
+  file_path        String
+  status           String
+  rejection_reason String?
+  reviewed_by      String?  @db.Uuid
+  reviewed_at      DateTime? @db.Timestamptz
+  created_at       DateTime @default(now()) @db.Timestamptz
+  updated_at       DateTime @updatedAt @db.Timestamptz
+
+  @@map("documents")
+}
